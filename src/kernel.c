@@ -1,5 +1,4 @@
-/* --- 1. ฟังก์ชันช่วย (ต้องอยู่บนสุด) --- */
-
+/* Helpers */
 unsigned char inb(unsigned short port) {
     unsigned char result;
     __asm__("in %%dx, %%al" : "=a" (result) : "d" (port));
@@ -8,7 +7,7 @@ unsigned char inb(unsigned short port) {
 
 void delay(int count) {
     volatile int i;
-    for (i = 0; i < count * 10000000; i++) {} 
+    for (i = 0; i < count * 10000000; i++) {}
 }
 
 void clear_screen() {
@@ -25,7 +24,15 @@ void print(const char* str, int row, int col, char color) {
     }
 }
 
-// ตารางคีย์บอร์ด
+void draw_progress_bar(int row, int col, int width, int progress, char color) {
+    print("[", row, col, 0x07);
+    for (int i = 0; i < width; i++) {
+        if (i < progress) print("=", row, col + 1 + i, color);
+        else print(".", row, col + 1 + i, 0x08);
+    }
+    print("]", row, col + 1 + width, 0x07);
+}
+
 unsigned char scancode_to_char[] = {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
     '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',
@@ -33,26 +40,46 @@ unsigned char scancode_to_char[] = {
     '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, '*', 0, ' '
 };
 
-/* --- 2. ฟังก์ชันหลัก (ต้องอยู่ล่างสุด) --- */
-
+/* Main Kernel */
 void kernel_main() {
     clear_screen();
-    print("JREX-OS IS LOADING...", 10, 30, 0x0E);
-    delay(20); 
-    
+    char logo_color = 0x0B;
+
+    // Logo ASCII ที่พี่ต้องการ
+    print("    /$$$$$                                       /$$$$$$   /$$$$$$ ", 3, 5, logo_color);
+    print("   |__  $$                                      /$$__  $$ /$$__  $$", 4, 5, logo_color);
+    print("      | $$  /$$$$$$   /$$$$$$  /$$   /$$       | $$  \\ $$| $$  \\__/", 5, 5, logo_color);
+    print("      | $$ /$$__  $$ /$$__  $$|  $$ /$$//$$$$$$| $$  | $$|  $$$$$$ ", 6, 5, logo_color);
+    print(" /$$  | $$| $$  \\__/| $$$$$$$$ \\  $$$$/|______/| $$  | $$ \\____  $$", 7, 5, logo_color);
+    print("| $$  | $$| $$      | $$_____/  >$$  $$        | $$  | $$ /$$  \\ $$", 8, 5, logo_color);
+    print("|  $$$$$$/| $$      |  $$$$$$$ /$$/\\  $$       |  $$$$$$/|  $$$$$$/", 9, 5, logo_color);
+    print(" \\______/ |__/       \\_______/|__/  \\__/        \\______/  \\______/ ", 10, 5, logo_color);
+
+    for (int p = 0; p <= 20; p++) {
+        draw_progress_bar(15, 30, 20, p, 0x0A);
+        delay(10);
+    }
+
+    delay(20);
     clear_screen();
-    print("JREX-OS TERMINAL READY.", 0, 0, 0x0F);
-    
-    int cursor = 160; 
+    print("JREX-OS TERMINAL v1.0", 0, 0, 0x0F);
+    print("Ready for input...", 1, 0, 0x07);
+
+    int cursor = 160 * 2;
+    char* video_memory = (char*) 0xB8000;
+
     while(1) {
         if(inb(0x64) & 0x01) {
             unsigned char scancode = inb(0x60);
-            if (!(scancode & 0x80) && scancode < 58) {
-                char c = scancode_to_char[scancode];
-                if (c > 0) {
-                    char str[2] = {c, '\0'};
-                    print(str, (cursor/160), (cursor%160)/2, 0x0F);
-                    cursor += 2;
+            if (!(scancode & 0x80)) {
+                if (scancode == 0x1C) cursor = ((cursor / 160) + 1) * 160;
+                else if (scancode < 58) {
+                    char c = scancode_to_char[scancode];
+                    if (c > 0) {
+                        video_memory[cursor] = c;
+                        video_memory[cursor+1] = 0x0F;
+                        cursor += 2;
+                    }
                 }
             }
         }
