@@ -1,0 +1,28 @@
+{
+  "Format": "2.0.0",
+  "Changes": [
+    {
+      "Action": "EditData",
+      "Target": "Data/Objects",
+      "Entries": {
+        "MyCustomSprinkler_Item": {
+          "Name": "My Custom Sprinkler",
+          "DisplayName": "สปริงเกอร์ประดิษฐ์ 16x16",
+          "Description": "สปริงเกอร์รุ่นพิเศษที่คุณสร้างขึ้นมาเอง รดน้ำกว้างสะใจ 16x16 บล็อก",
+          "Type": "Crafting",
+          "Category": -8,
+          "Price": 5000,
+          // เปลี่ยนบรรทัด Texture ให้ชี้มาที่ไฟล์ในโฟลเดอร์ Mod ของเรา
+          "Texture": "sp_t.png" 
+        }
+      }
+    },
+    {
+      "Action": "EditData",
+      "Target": "Data/CraftingRecipes",
+      "Entries": {
+        "My Custom Sprinkler": "390 15 388 15 334 1/Home/MyCustomSprinkler_Item/false/null"
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "Name": "My Custom 16x16 Sprinkler - Code",
+  "Author": "YourName",
+  "Version": "1.0.0",
+  "Description": "ตัวควบคุมระบบรดน้ำสปริงเกอร์ 16x16",
+  "UniqueID": "YourName.spinKer",
+  "EntryDll": "spinKer.dll",
+  "MinimumApiVersion": "4.0.0"
+}

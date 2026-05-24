@@ -1,0 +1,10 @@
+{
+  "Name": "My Custom 16x16 Sprinkler - Content",
+  "Author": "YourName",
+  "Version": "1.0.0",
+  "Description": "ส่วนแสดงผลและรูปภาพของสปริงเกอร์ 16x16",
+  "UniqueID": "YourName.spinKer.CP",
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  }
+}
