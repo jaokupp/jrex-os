@@ -12,8 +12,8 @@
           "Type": "Crafting",
           "Category": -8,
           "Price": 5000,
-          // แก้ไขจุดนี้: ใส่ UniqueID ของมอดตัวเอง นำหน้าชื่อไฟล์ภาพ (ไม่ต้องใส่ .png)
-          "Texture": "YourName.spinKer.CP/sp_t" 
+          // เปลี่ยนบรรทัด Texture ให้ชี้มาที่ไฟล์ในโฟลเดอร์ Mod ของเรา
+          "Texture": "sp_t.png" 
         }
       }
     },
